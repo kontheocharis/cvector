@@ -1,6 +1,6 @@
 #include <memory.h>
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "vector.h"
 
@@ -10,7 +10,7 @@ static int alloc_problem()
     return -1;
 }
 
-int vec_init(struct vec_t *v, const void *data, size_t len, size_t elem_size)
+int vec_init(struct vec *v, const void *data, size_t len, size_t elem_size)
 {
     if (len != 0) {
         v->data = malloc(len * elem_size);
@@ -28,7 +28,7 @@ int vec_init(struct vec_t *v, const void *data, size_t len, size_t elem_size)
     return 0;
 }
 
-static int vec_resize_inc(struct vec_t *v) 
+static int vec_resize_inc(struct vec *v)
 {
     if (++v->len > v->capacity) {
         v->capacity = 2 * v->len;
@@ -41,7 +41,7 @@ static int vec_resize_inc(struct vec_t *v)
     return 0;
 }
 
-int vec_append(struct vec_t *v, const void *elem)
+int vec_append(struct vec *v, const void *elem)
 {
     int status;
     if ((status = vec_resize_inc(v)) != 0)
@@ -53,7 +53,7 @@ int vec_append(struct vec_t *v, const void *elem)
     return 0;
 }
 
-int vec_insert(struct vec_t *v, size_t index, const void *elem)
+int vec_insert(struct vec *v, size_t index, const void *elem)
 {
     int status;
     if ((status = vec_resize_inc(v)) != 0)
@@ -69,12 +69,12 @@ int vec_insert(struct vec_t *v, size_t index, const void *elem)
     return 0;
 }
 
-void vec_set(struct vec_t *v, size_t index, const void *data)
+void vec_set(struct vec *v, size_t index, const void *data)
 {
     memcpy(v->data + index * v->elem_size, data, v->elem_size);
 }
 
-void vec_remove(struct vec_t *v, size_t index)
+void vec_remove(struct vec *v, size_t index)
 {
     memmove(v->data + index * v->elem_size,
             v->data + (index + 1) * v->elem_size,
@@ -82,12 +82,9 @@ void vec_remove(struct vec_t *v, size_t index)
     --v->len;
 }
 
-void *vec_get(struct vec_t *v, size_t index)
-{
-    return v->data + index * v->elem_size;
-}
+void *vec_get(struct vec *v, size_t index) { return v->data + index * v->elem_size; }
 
-void vec_free(struct vec_t *v)
+void vec_free(struct vec *v)
 {
     free(v->data);
     v->data = NULL;
@@ -96,7 +93,7 @@ void vec_free(struct vec_t *v)
     v->elem_size = 0;
 }
 
-int vec_copy(struct vec_t *dest, const struct vec_t *source)
+int vec_copy(struct vec *dest, const struct vec *source)
 {
     if (source->len != 0) {
         dest->data = malloc(source->len * source->elem_size);
