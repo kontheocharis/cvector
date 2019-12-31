@@ -37,3 +37,4 @@ build/
 compile_commands.json
 debug/
 release/
+.clangd/
